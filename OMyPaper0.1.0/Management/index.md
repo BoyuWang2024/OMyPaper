@@ -49,15 +49,15 @@ last_updated: 2026-04-21
 
 ## Current Vault Status
 
-- Initial scaffolding completed on `2026-04-21`.
-- Latest bootstrap report: `Management/BootstrapReports/2026-04-21-2058-initial-bootstrap.md`
-- `LiteratureNotes/` currently has no imported note files.
-- `Notes/` currently has no paper or topic pages yet.
+- Skill system scaffolding is present.
+- Runtime and test outputs have been cleared for migration.
+- `LiteratureNotes/` currently has no retained raw note files.
+- `Notes/` currently has no retained paper, concept, method, comparison, or topic pages.
 - No session notes have been registered yet.
 
 ## Next Recommended Actions
 
 1. Import raw paper notes into `LiteratureNotes/`.
-2. Use S6 to capture high-value reading discussions.
-3. Use S1 to compile the first paper wiki page.
-4. Use S2 and S3 on a weekly cadence.
+2. Use S6 when a substantive reading discussion produces reusable insight.
+3. Use S1 to compile a paper into the wiki when ready.
+4. Use S2 and S3 on a weekly cadence after real content accumulates.

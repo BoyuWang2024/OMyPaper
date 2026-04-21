@@ -19,4 +19,3 @@ This file indexes the standardized session notes created by S6 and later consume
 
 | session_id | session_date | citekey | title | path | merge_status | match_confidence | last_action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-

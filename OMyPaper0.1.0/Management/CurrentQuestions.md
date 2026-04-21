@@ -9,7 +9,7 @@ Use this file to track active questions that should influence S1, S3, S4, or S5 
 
 ## Priority Questions
 
-- [ ] 暂无。后续可在这里登记当前最重要的论文问题、概念疑问或实验现象。
+- [ ] None yet. Record the most important current paper question, concept confusion, or experimental phenomenon here.
 
 ## Paper-Specific Open Questions
 
@@ -20,4 +20,3 @@ Use this file to track active questions that should influence S1, S3, S4, or S5 
 
 | theme | current hypothesis | supporting pages | missing evidence |
 | --- | --- | --- | --- |
-

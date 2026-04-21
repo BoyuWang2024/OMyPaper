@@ -18,4 +18,3 @@ One row per paper. The registry is keyed by `citekey` and acts as the management
 
 | citekey | zotero_key | title | status | literature_note | paper_wiki | last_updated | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-
