@@ -1,14 +1,5 @@
 # OMyPaper Skills
 
-This README is bilingual.
-
-- English version comes first.
-- 中文版本在后面。
-
----
-
-# English Guide
-
 ## What OMyPaper Is
 
 **OMyPaper Skills** is a local literature-management and knowledge-base workflow for researchers who read papers in **Zotero**, sync literature notes into **Obsidian** through **ZotLit**, and then use an **LLM Agent** to continuously organize, refine, retrieve, review, summarize, and project-manage the accumulated knowledge.
@@ -360,10 +351,6 @@ It is especially suitable for users who prefer:
 - `LiteratureNotes/` should still be treated as the raw source layer.
 - Agent-maintained content should mainly live in `Notes/`, `projects/`, and `Management/`.
 - If you customize the folder structure, you should also update the corresponding Skill prompts and Agent instructions.
-
----
-
-# 中文指南
 
 ## OMyPaper 是什么
 
