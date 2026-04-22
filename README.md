@@ -1,16 +1,32 @@
 # OMyPaper Skills
 
-### Overview
+This README is bilingual.
 
-**OMyPaper Skills** is a local literature-management and knowledge-base workflow designed for researchers who read papers in **Zotero**, sync literature notes into **Obsidian** through **ZotLit**, and then use an **LLM Agent** to continuously organize, refine, retrieve, review, and summarize the accumulated knowledge.
-
-Instead of treating an LLM as a temporary question-answering tool that re-reads raw documents from scratch every time, this project treats the LLM as a **persistent knowledge-base maintainer**. The Agent reads your literature notes, transforms them into structured wiki-style knowledge, maintains links across papers and concepts, generates weekly reports, supports paper review, and helps you quickly relocate the most relevant notes when you need to revisit a topic.
-
-This repository contains a set of reusable **Skills** that can be used with **any Agent tool**. The workflow is not tied to a specific coding assistant or platform. As long as your Agent can read and write local files, these Skills can be adapted for your use.
+- English version comes first.
+- 中文版本在后面。
 
 ---
 
-### Compatibility
+# English Guide
+
+## What OMyPaper Is
+
+**OMyPaper Skills** is a local literature-management and knowledge-base workflow for researchers who read papers in **Zotero**, sync literature notes into **Obsidian** through **ZotLit**, and then use an **LLM Agent** to continuously organize, refine, retrieve, review, summarize, and project-manage the accumulated knowledge.
+
+Instead of treating an LLM as a temporary question-answering tool that re-reads raw documents from scratch every time, this project treats the Agent as a **persistent local knowledge-base maintainer**.
+
+The core workflow is:
+
+- **Zotero** for reading, annotating, and reference management
+- **ZotLit** for exporting literature notes into Obsidian
+- **Obsidian** for the local markdown-based knowledge container
+- **Agent / Skills** for turning raw notes into structured wiki pages, project structures, session traces, reviews, reports, and retrieval paths
+
+This repository is **Agent-agnostic**. Any agent that can read and write local files can adapt these Skills.
+
+---
+
+## Compatibility
 
 This Skills set is developed and organized around the following environment:
 
@@ -23,7 +39,7 @@ This Skills set is developed and organized around the following environment:
 
 ---
 
-### Required Obsidian Setup
+## Required Obsidian Setup
 
 To use this Skills system correctly:
 
@@ -35,7 +51,7 @@ To use this Skills system correctly:
 Default location for new literature notes = OMyPaper/LiteratureNotes
 ```
 
-This setting is important because the Skills assume that all raw literature notes imported from Zotero will be stored under:
+This setting matters because the Skills assume that all raw literature notes imported from Zotero will be stored under:
 
 ```text
 OMyPaper/LiteratureNotes
@@ -49,132 +65,282 @@ For ZotLit installation and configuration details, please refer to the official 
 
 ---
 
-### Core Design Philosophy
+## Design Philosophy
 
-This project follows a simple principle:
+OMyPaper follows a layered design:
 
-- **Zotero** is used for reading papers, annotating PDFs, and managing references.
-- **ZotLit** is used to export literature notes into Obsidian.
-- **Obsidian** is used as the local file-based knowledge container.
-- **LLM Agents** are used to organize, synthesize, maintain, and retrieve knowledge.
+- **Raw layer**: `LiteratureNotes/` stores raw reading traces imported from Zotero via ZotLit.
+- **Global knowledge layer**: `Notes/` stores durable paper, concept, method, comparison, and topic pages.
+- **Project layer**: `projects/` organizes literature into project-specific structures.
+- **Control layer**: `Management/` stores rules, templates, indices, logs, reports, queues, and Skill specifications.
 
-The raw literature note is treated as the **source layer**, while the Agent-maintained wiki is treated as the **knowledge layer**.
+In other words:
 
-This means the system is not just a note archive. It is intended to become a continuously evolving, locally stored, and cross-linked **personal paper wiki**.
+- the raw literature note is the **source layer**
+- the Agent-maintained wiki is the **knowledge layer**
+- the project tree is the **research-organization layer**
+
+The long-term goal is to turn scattered reading traces into a continuously evolving, locally stored, and cross-linked **personal paper wiki + project workspace**.
 
 ---
 
-### Repository Structure
+## Version Evolution
 
-A recommended folder layout is:
+## v0.1.0
+
+`0.1.0` established the first working version of the OMyPaper Skills system.
+
+### Main characteristics of 0.1.0
+
+- paper-centric local knowledge-base workflow
+- `LiteratureNotes/` as the raw note layer
+- `Notes/` as the global wiki layer
+- `Management/` as the control and reporting layer
+- core Skills focused on:
+  - structure check
+  - single-paper ingestion
+  - whole-wiki cleanup
+  - weekly report generation
+  - paper recall
+  - local knowledge retrieval
+
+### What 0.1.0 already solved
+
+- turning raw Zotero reading notes into structured wiki pages
+- maintaining a local paper knowledge base
+- organizing concepts, methods, datasets, and comparisons across papers
+- generating weekly reading summaries
+- recalling a paper efficiently
+- answering topic-based questions from the local knowledge base first
+
+### Limitation of 0.1.0
+
+`0.1.0` was still primarily **paper-centric**.
+It did not yet fully support:
+
+- project-aware workflows
+- project-level review and navigation
+- project-level session capture
+- hierarchical parent/child project structures
+- conservative paper-to-project assignment queues
+
+---
+
+## v0.2.0
+
+`0.2.0` upgrades OMyPaper from a paper-centric wiki workflow into a **paper + hierarchical project tree** workflow.
+
+### Newly added content in 0.2.0
+
+- `projects/` layer for project organization
+- `Management/ProjectIndex.md`
+- `Management/ProjectTree.md`
+- `Management/ProjectAssignmentQueue.md`
+- `Management/ProjectSessionNotes/`
+- project-aware templates such as:
+  - `ProjectManifest.template.yml`
+  - `ProjectLiteratureMap.template.md`
+  - `ProjectOutline.template.md`
+  - `ProjectReview.template.md`
+  - `ProjectSessionNote.template.md`
+  - `ProjectTree.template.md`
+  - `ProjectIndex.template.md`
+  - `ProjectAssignmentQueue.template.md`
+
+### Newly implemented capabilities in 0.2.0
+
+#### 1. Hierarchical project tree
+
+`0.2.0` introduces a project tree with:
+
+- parent projects
+- child projects
+- standalone projects
+
+Project hierarchy is now represented through project metadata such as `project_type` and `parent_project`.
+
+#### 2. Project-aware S0–S6
+
+All seven Skills were upgraded from paper-only behavior into **paper + project-aware behavior**.
+
+#### 3. S1 becomes a mandatory three-phase workflow
+
+Skill 1 is no longer just a single-paper summarizer. It now follows three mandatory phases:
+
+1. ingest into the global wiki
+2. generate project-placement suggestions from the saved global result
+3. write suggestions into `Management/ProjectAssignmentQueue.md` and wait for user confirmation
+
+This means paper placement into projects is now:
+
+- conservative
+- reviewable
+- user-confirmed
+
+#### 4. S2 now lints both `Notes/` and `projects/`
+
+Whole-vault maintenance now includes:
+
+- project-tree health
+- project manifest consistency
+- parent-child coherence
+- sibling overlap checks
+- drift between `文献地图.md` and `论文大纲.md`
+
+#### 5. S3 now reports paper progress and project progress together
+
+Weekly reports are no longer only paper logs.
+They now summarize:
+
+- weekly paper reading progress
+- global wiki progress
+- parent-project progress
+- child-project progress
+- next project priorities
+
+#### 6. S4 now supports project review
+
+Review is no longer limited to one paper.
+`0.2.0` adds support for:
+
+- paper review
+- child-project review
+- parent-project review
+- quick familiarization paths for projects
+
+#### 7. S5 now supports project navigation
+
+Local retrieval now supports:
+
+- paper retrieval
+- project-tree listing
+- parent/child project explanation
+- sibling-project comparison
+- fast familiarization routes for one project
+
+#### 8. S6 now supports paper sessions, project sessions, and hybrid sessions
+
+High-value discussions can now be captured as:
+
+- paper session
+- child-project session
+- parent-project session
+- hybrid session
+
+These sessions can later support S1, S3, S4, and S5.
+
+---
+
+## v0.1.0 vs v0.2.0 at a Glance
+
+| Dimension                | v0.1.0                             | v0.2.0                                     |
+| ------------------------ | ---------------------------------- | ------------------------------------------ |
+| Main paradigm            | paper-centric                      | paper + hierarchical project tree          |
+| Global paper wiki        | yes                                | yes                                        |
+| Project organization     | very limited / not fully supported | fully introduced as a first-class layer    |
+| Parent-child projects    | no                                 | yes                                        |
+| Project assignment queue | no                                 | yes                                        |
+| Project session capture  | no                                 | yes                                        |
+| S1 flow                  | ingest one paper                   | ingest → project suggestion → confirmation |
+| S2 scope                 | `Notes/` mainly                    | `Notes/` + `projects/`                     |
+| S3 scope                 | weekly paper summary               | weekly paper + project summary             |
+| S4 targets               | one paper                          | paper / child project / parent project     |
+| S5 retrieval             | paper/topic retrieval              | paper + project-tree navigation            |
+| S6 capture               | paper-centric                      | paper / project / hybrid                   |
+| Templates                | paper/wiki oriented                | paper + project + queue + tree templates   |
+
+---
+
+## Repository Structure (v0.2.0)
+
+A recommended folder layout is now:
 
 ```text
 OMyPaper/
-├─ LiteratureNotes/          # Raw notes imported from Zotero via ZotLit
+├─ LiteratureNotes/                  # Raw notes imported from Zotero via ZotLit
 ├─ Notes/
-│  ├─ Papers/                # Per-paper wiki pages
-│  ├─ Concepts/              # Concept pages
-│  ├─ Methods/               # Method pages
-│  ├─ Datasets/              # Dataset pages
-│  ├─ Comparisons/           # Cross-paper comparison pages
-│  ├─ Topics/                # Thematic pages
-│  └─ Syntheses/             # Higher-level synthesis pages
+│  ├─ Papers/                        # Per-paper wiki pages
+│  ├─ Concepts/                      # Concept pages
+│  ├─ Methods/                       # Method pages
+│  ├─ Datasets/                      # Dataset pages
+│  ├─ Comparisons/                   # Cross-paper comparison pages
+│  ├─ Topics/                        # Thematic pages
+│  └─ Syntheses/                     # Higher-level synthesis pages
 ├─ Management/
-│  ├─ AGENTS.md              # Agent instructions / schema
-│  ├─ CurrentQuestions.md    # Current research questions
-│  ├─ index.md               # Global wiki index
-│  ├─ log.md                 # Append-only operation log
-│  ├─ PaperRegistry.md       # Paper mapping registry
-│  ├─ WeeklyReports/         # Weekly reading reports
-│  ├─ ReviewNotes/           # Paper review / recall notes
-│  └─ LintReports/           # Knowledge-base health reports
-└─ Attachments/              # Optional local attachments
+│  ├─ AGENTS.md                      # Agent instructions / schema
+│  ├─ CurrentQuestions.md            # Current research questions
+│  ├─ index.md                       # Global wiki index
+│  ├─ log.md                         # Append-only operation log
+│  ├─ PaperRegistry.md               # Paper mapping registry
+│  ├─ SessionIndex.md                # Session index
+│  ├─ ProjectIndex.md                # Project summary index
+│  ├─ ProjectTree.md                 # Parent-child project tree index
+│  ├─ ProjectAssignmentQueue.md      # Pending project-placement suggestions
+│  ├─ WeeklyReports/                 # Weekly reports
+│  ├─ ReviewNotes/                   # Review / recall notes
+│  ├─ LintReports/                   # Vault health reports
+│  ├─ SessionNotes/                  # Paper sessions
+│  ├─ ProjectSessionNotes/           # Project sessions / hybrid sessions
+│  ├─ Templates/                     # Shared templates
+│  └─ Skills/                        # Skill specifications
+├─ projects/                         # Hierarchical project layer
+└─ Attachments/                      # Optional local attachments
 ```
 
 ---
 
-### What These Skills Are Designed to Do
+## Skills Overview (v0.2.0)
 
-This Skills collection is designed to support the full lifecycle of academic paper reading and knowledge management:
-
-- turn raw Zotero reading notes into structured wiki pages
-- continuously maintain a local paper knowledge base
-- organize concepts, methods, datasets, and comparisons across papers
-- generate weekly reading summaries from local notes
-- help recall and review a paper efficiently
-- answer topic-based questions by searching the local knowledge base first
-- tell you **which paper**, **which note**, and **which part** is most worth revisiting
-
-The long-term goal is to help researchers move from scattered reading traces to a maintainable and queryable local research memory.
+| Skill | Name                          | What It Does                                                 | Key Upgrade in 0.2.0                                         |
+| ----- | ----------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `S0`  | Bootstrap / Consistency Check | checks whether the global vault, project tree, and session layers are complete and consistent | now checks `projects/`, tree cycles, manifest validity, and project-session readiness |
+| `S1`  | Paper Ingest                  | compiles one paper into the global wiki and generates project-placement suggestions | now has mandatory three phases and writes suggestions into `ProjectAssignmentQueue.md` |
+| `S2`  | Whole-Vault Lint              | maintains the structural health of `Notes/` and `projects/`  | now checks parent-child project coherence, sibling overlap, and map/outline drift |
+| `S3`  | Weekly Report                 | generates a weekly report across papers and projects         | now includes parent-project and child-project progress       |
+| `S4`  | Review / Recall               | helps you recall one paper, one child project, or one parent project | now supports project-level review and quick familiarization paths |
+| `S5`  | Local Retrieval / Navigation  | answers with local evidence and gives re-read paths          | now supports project-tree listing, project explanation, and sibling comparison |
+| `S6`  | Session Capture / Matching    | turns valuable discussion into paper sessions, project sessions, or hybrid sessions | now supports project-aware and hybrid session capture        |
 
 ---
 
-### Skills Description
+## Recommended Usage Pattern (v0.2.0)
 
-#### Skill 0 — Structure Check & Initialization
-
-This Skill checks whether the local knowledge-base workspace is properly initialized and follows the expected folder and naming conventions. It verifies the existence of key directories such as `LiteratureNotes`, `Notes`, and `Management`, checks paper identifiers such as `citekey`, and creates missing management files when needed. It serves as the foundation for all other Skills by ensuring that the repository remains stable, consistent, and machine-maintainable as it grows.
-
-#### Skill 1 — Single-Paper Note Ingestion
-
-This Skill processes one paper at a time. It reads the corresponding literature note imported from Zotero, optionally reads the PDF and related local files, and transforms the raw note into a structured wiki page under the local knowledge base. It extracts the paper’s problem setting, core method, important experiments, user concerns, limitations, and relations to existing notes. It may also update related concept pages, method pages, comparison pages, and registry records. Its purpose is not to produce a shallow summary, but to integrate one paper into a reusable knowledge network.
-
-#### Skill 2 — Full Wiki Organization
-
-This Skill performs maintenance over the entire `Notes` knowledge base. It identifies duplicated pages, inconsistent naming, missing links, orphan pages, stale conclusions, and missing cross-paper relationships. It can generate a lint-style report and optionally reorganize the wiki in a safe and structured way. Its goal is to prevent the local knowledge base from becoming another pile of fragmented notes and instead keep it navigable, coherent, and sustainable over time.
-
-#### Skill 3 — Weekly Report Generation
-
-This Skill reads the update history of the local knowledge base and generates a weekly markdown report summarizing what has been read, what has been updated, what new concepts or judgments emerged, what unresolved questions remain, and what should be prioritized next week. The generated report is intended to be viewed directly inside Obsidian. It is not merely a reading log, but a structured summary of intellectual progress.
-
-#### Skill 4 — Paper Review / Recall
-
-This Skill helps the user quickly revisit and reconstruct their understanding of a specific paper. It combines the original ZotLit-imported note, the structured paper wiki, and related concept/comparison pages to produce a recall-oriented review. It can be used for fast memory refresh, deeper re-understanding, meeting preparation, or self-testing. The emphasis is not on re-summarizing the paper from scratch, but on restoring the user’s previous reading context and highlighting what still deserves a second look.
-
-#### Skill 5 — Local Knowledge Retrieval & Re-reading Navigation
-
-This Skill answers topic- or method-based questions by searching the local knowledge base first. Instead of giving only a generic answer, it identifies which papers, notes, or sections are most relevant, and tells the user what to revisit and in what order. It is designed to turn the knowledge base into an actual research navigation system rather than a static note archive.
-
----
-
-### Why This Workflow Matters
-
-Most LLM-based paper workflows behave like temporary retrieval systems: they re-read documents every time and do not preserve the structure of prior learning. This project takes a different approach. It uses the Agent to continuously build and maintain a persistent local paper wiki.
-
-As more papers are read, the knowledge base becomes:
-
-- more structured
-- more interconnected
-- easier to search
-- easier to review
-- easier to reuse in future research
-
-In short, the system is designed to help users accumulate research understanding over time rather than repeatedly restart from raw documents.
-
----
-
-### Recommended Usage Pattern
-
-A practical daily workflow looks like this:
+### Daily paper reading
 
 1. Read and annotate papers in Zotero.
 2. Sync/import literature notes into Obsidian via ZotLit.
-3. Run the **Single-Paper Note Ingestion** Skill to compile the paper into the local wiki.
-4. Periodically run **Full Wiki Organization** to keep the knowledge base healthy.
-5. Generate weekly reports with **Weekly Report Generation**.
-6. Use **Paper Review** and **Local Knowledge Retrieval** during study, meetings, and research planning.
+3. If a discussion becomes worth preserving, run **S6** first.
+4. Run **S1** to compile the paper into the global wiki.
+5. Review the placement suggestions written into `Management/ProjectAssignmentQueue.md`.
+6. After confirmation, write the final project placement into `project.yml`.
+7. Use **S4** for recall.
+8. Use **S5** for answer + path + re-read order.
+
+### Weekly maintenance
+
+1. Run **S2** for whole-vault lint.
+2. Review the lint report.
+3. Run **S3** to generate the weekly report.
+
+### Project work
+
+1. Keep paper knowledge unique in `Notes/`.
+2. Keep project grouping and hierarchy inside `projects/`.
+3. Use `project.yml` as the only project-membership interface.
+4. Use **S4** and **S5** to revisit or navigate one project quickly.
 
 ---
 
-### Scope
+## Scope
 
-This project is designed for:
+OMyPaper is designed for:
 
 - academic paper reading
 - literature management
 - research note organization
-- local personal knowledge base building
+- local personal knowledge-base building
 - concept/method comparison across papers
+- project-oriented research organization
 - long-term research memory support
 
 It is especially suitable for users who prefer:
@@ -187,25 +353,36 @@ It is especially suitable for users who prefer:
 
 ---
 
-### Notes
+## Notes
 
-- This repository is **Agent-agnostic**: any Agent tool can use these Skills.
+- This repository is **Agent-agnostic**.
 - The system assumes a **local file-based workflow**.
-- The imported literature notes under `LiteratureNotes/` should generally be treated as the raw source layer.
-- The Agent-maintained content should mainly live in `Notes/` and `Management/`.
+- `LiteratureNotes/` should still be treated as the raw source layer.
+- Agent-maintained content should mainly live in `Notes/`, `projects/`, and `Management/`.
 - If you customize the folder structure, you should also update the corresponding Skill prompts and Agent instructions.
-
-### 项目简介
-
-**OMyPaper Skills** 是一套面向本地论文知识库工作流的 Skills 设计方案，适用于这样的阅读流程：你在 **Zotero** 中阅读和批注文献，通过 **ZotLit** 将文献笔记导入 **Obsidian**，再由 **LLM Agent** 持续完成笔记整理、知识沉淀、结构维护、主题检索、论文复盘与周报生成。
-
-这套系统的核心思想不是把 LLM 当作一个“临时读 PDF、临时回答问题”的工具，而是把它当作一个**持续维护本地知识库的助手**。Agent 会读取你的文献笔记，将其转化为结构化的 wiki 内容，维护不同论文、概念与方法之间的联系，生成阶段性总结，并在你需要时帮助你快速定位“应该回看哪篇论文、哪条笔记、哪一部分内容”。
-
-本仓库中的 Skills 设计为**适用于任意 Agent 工具**。它不绑定某一个特定平台，也不依赖某一个特定编程助手。只要你的 Agent 具备本地文件读写能力，就可以将本 Skills 体系应用到自己的论文管理流程中。
 
 ---
 
-### 兼容环境
+# 中文指南
+
+## OMyPaper 是什么
+
+**OMyPaper Skills** 是一套面向本地论文知识库与项目组织工作流的 Skills 设计方案，适用于这样的阅读流程：你在 **Zotero** 中阅读和批注文献，通过 **ZotLit** 将文献笔记导入 **Obsidian**，再由 **LLM Agent** 持续完成笔记整理、知识沉淀、结构维护、主题检索、论文复盘、项目导航与周报生成。
+
+它的核心思想不是把 LLM 当作一个“临时读 PDF、临时回答问题”的工具，而是把它当作一个**持续维护本地知识库与项目结构的助手**。
+
+核心链路是：
+
+- **Zotero** 负责阅读、批注与参考文献管理
+- **ZotLit** 负责将阅读痕迹导入 Obsidian
+- **Obsidian** 负责承载本地 Markdown 知识库
+- **Agent / Skills** 负责将原始笔记转化为结构化 wiki、项目结构、session 沉淀、复盘、周报与导航路径
+
+本仓库中的 Skills 设计为**适用于任意 Agent 工具**。只要 Agent 具备本地文件读写能力，就可以将本 Skills 体系应用到自己的论文管理流程中。
+
+---
+
+## 兼容环境
 
 本 Skills 体系基于以下版本进行开发与组织：
 
@@ -218,7 +395,7 @@ It is especially suitable for users who prefer:
 
 ---
 
-### 使用前的必要配置
+## 使用前的必要配置
 
 要正确使用本 Skills，请先完成以下设置：
 
@@ -236,7 +413,7 @@ Default location for new literature notes = OMyPaper/LiteratureNotes
 OMyPaper/LiteratureNotes
 ```
 
-如果这个路径被修改，那么 Agent 在执行笔记匹配、单篇整理、知识库维护和检索导航时，可能无法正确找到原始笔记，或者需要你手动调整相应的提示词与规则。
+如果这个路径被修改，那么 Agent 在执行笔记匹配、单篇整理、知识库维护和项目导航时，可能无法正确找到原始笔记，或者需要你手动调整相应的提示词与规则。
 
 关于 ZotLit 的安装与详细配置，请参考官方文档：
 
@@ -244,125 +421,270 @@ OMyPaper/LiteratureNotes
 
 ---
 
-### 核心设计理念
+## 设计理念
 
-本项目遵循如下分工：
+OMyPaper 采用分层设计：
 
-- **Zotero** 负责阅读论文、管理参考文献、批注 PDF。
-- **ZotLit** 负责将文献笔记导入 Obsidian。
-- **Obsidian** 负责承载本地文件化知识库。
-- **LLM Agent** 负责整理、综合、维护和检索知识。
+- **原始层**：`LiteratureNotes/` 保存 Zotero / ZotLit 导入的原始阅读痕迹
+- **全局知识层**：`Notes/` 保存稳定的论文页、概念页、方法页、比较页和主题页
+- **项目层**：`projects/` 保存项目组织、项目文献地图与论文大纲
+- **控制层**：`Management/` 保存规则、模板、索引、日志、报告、队列与 Skill 规范
 
-其中，原始文献笔记被视为**原始来源层**，而 Agent 维护的 wiki 页面被视为**知识层**。
+换句话说：
 
-也就是说，这套系统不是简单的笔记存档工具，而是一个会随着阅读不断演化、不断补充链接和结构的**本地论文 wiki 系统**。
+- 原始文献笔记是**来源层**
+- Agent 维护的 wiki 是**知识层**
+- 项目树是**研究组织层**
+
+长期目标，是把零散的阅读痕迹转化成一个不断演化的、本地存储的、可交叉链接的**个人论文 wiki + 项目工作区**。
 
 ---
 
-### 推荐目录结构
+## 版本演进
 
-建议采用如下目录结构：
+## v0.1.0
+
+`0.1.0` 是 OMyPaper Skills 的第一版可用版本。
+
+### 0.1.0 的主要特点
+
+- 以单篇论文和全局知识库为中心
+- `LiteratureNotes/` 作为原始笔记层
+- `Notes/` 作为全局 wiki 层
+- `Management/` 作为管理与报告层
+- 核心 Skills 主要覆盖：
+  - 结构检查
+  - 单篇论文整理
+  - 全库整理
+  - 周报生成
+  - 论文复盘
+  - 本地检索导航
+
+### 0.1.0 已解决的问题
+
+- 将 Zotero 的原始阅读痕迹转为结构化 wiki 页面
+- 持续维护本地论文知识库
+- 组织跨论文的概念、方法、数据集与比较关系
+- 生成周报
+- 支持单篇论文复盘
+- 优先从本地知识库中回答主题问题
+
+### 0.1.0 的主要限制
+
+`0.1.0` 仍然主要是**paper-centric**：
+
+- 还没有完整的 project-aware 工作流
+- 还不支持项目级复盘与导航
+- 还不支持项目级 session 沉淀
+- 还不支持父项目 / 子项目层级结构
+- 还没有“项目归属建议 + 待确认队列”的保守机制
+
+---
+
+## v0.2.0
+
+`0.2.0` 将 OMyPaper 从“论文中心的 wiki 工作流”升级为**论文 + 层级项目树**的工作流。
+
+### 0.2.0 新加入的内容
+
+- `projects/` 项目层
+- `Management/ProjectIndex.md`
+- `Management/ProjectTree.md`
+- `Management/ProjectAssignmentQueue.md`
+- `Management/ProjectSessionNotes/`
+- 一组 project-aware 模板，例如：
+  - `ProjectManifest.template.yml`
+  - `ProjectLiteratureMap.template.md`
+  - `ProjectOutline.template.md`
+  - `ProjectReview.template.md`
+  - `ProjectSessionNote.template.md`
+  - `ProjectTree.template.md`
+  - `ProjectIndex.template.md`
+  - `ProjectAssignmentQueue.template.md`
+
+### 0.2.0 新实现的能力
+
+#### 1. 层级项目树
+
+`0.2.0` 新增了项目树结构，支持：
+
+- 父项目
+- 子项目
+- 独立项目
+
+项目层级关系通过 `project_type` 与 `parent_project` 等元数据表达。
+
+#### 2. S0–S6 全部升级为 project-aware
+
+7 个 Skills 不再只是面向论文，而是升级为 **论文 + 项目** 双层能力。
+
+#### 3. S1 升级为强制三阶段流程
+
+Skill 1 不再只是“单篇论文整理器”，而变成：
+
+1. 先整理进全局 wiki
+2. 再根据全局整理结果生成项目归属建议
+3. 把建议写入 `Management/ProjectAssignmentQueue.md`，等待用户确认
+
+这样，论文进入项目的过程变成了：
+
+- 保守的
+- 可审核的
+- 由用户最终确认的
+
+#### 4. S2 同时整理 `Notes/` 和 `projects/`
+
+全库整理现在会同时检查：
+
+- 项目树健康度
+- 项目清单一致性
+- 父子项目逻辑
+- 兄弟项目重叠
+- `文献地图.md` 与 `论文大纲.md` 的漂移
+
+#### 5. S3 现在会同时总结论文进展和项目进展
+
+周报不再只是论文阅读流水，而会同时总结：
+
+- 本周论文阅读进展
+- 全局 wiki 更新
+- 父项目推进
+- 子项目推进
+- 下周优先推进的项目
+
+#### 6. S4 现在支持项目复盘
+
+复盘不再只针对单篇论文，还支持：
+
+- 单篇论文复盘
+- 子项目复盘
+- 父项目复盘
+- 项目快速熟悉路径输出
+
+#### 7. S5 现在支持项目树导航
+
+本地检索现在支持：
+
+- 论文检索
+- 项目树列出
+- 父项目 / 子项目说明
+- 兄弟项目比较
+- 项目快速熟悉路径
+
+#### 8. S6 现在支持 paper / project / hybrid session
+
+高价值讨论现在可以保存为：
+
+- paper session
+- child-project session
+- parent-project session
+- hybrid session
+
+这些 session 后续可以被 S1、S3、S4、S5 复用。
+
+---
+
+## v0.1.0 与 v0.2.0 对比一览
+
+| 维度               | v0.1.0            | v0.2.0                            |
+| ------------------ | ----------------- | --------------------------------- |
+| 主要范式           | paper-centric     | paper + hierarchical project tree |
+| 全局论文 wiki      | 有                | 有                                |
+| 项目组织层         | 很弱 / 未完整支持 | 成为正式一层                      |
+| 父项目 / 子项目    | 无                | 有                                |
+| 项目归属待确认队列 | 无                | 有                                |
+| 项目级 session     | 无                | 有                                |
+| S1 流程            | 整理一篇论文      | 整理 → 建议 → 确认                |
+| S2 范围            | 主要是 `Notes/`   | `Notes/` + `projects/`            |
+| S3 范围            | 论文周报          | 论文 + 项目周报                   |
+| S4 复盘对象        | 单篇论文          | 论文 / 子项目 / 父项目            |
+| S5 检索对象        | 论文 / 主题       | 论文 + 项目树                     |
+| S6 沉淀对象        | 论文为主          | 论文 / 项目 / hybrid              |
+| 模板体系           | 偏论文 / wiki     | 扩展到项目 / 队列 / 项目树        |
+
+---
+
+## 仓库结构（v0.2.0）
+
+推荐目录结构现在是：
 
 ```text
 OMyPaper/
-├─ LiteratureNotes/          # 由 ZotLit 从 Zotero 导入的原始文献笔记
+├─ LiteratureNotes/                  # 由 ZotLit 从 Zotero 导入的原始文献笔记
 ├─ Notes/
-│  ├─ Papers/                # 单篇论文 wiki 页面
-│  ├─ Concepts/              # 概念页
-│  ├─ Methods/               # 方法页
-│  ├─ Datasets/              # 数据集页
-│  ├─ Comparisons/           # 跨论文比较页
-│  ├─ Topics/                # 主题页
-│  └─ Syntheses/             # 高层综合页
+│  ├─ Papers/                        # 单篇论文 wiki 页面
+│  ├─ Concepts/                      # 概念页
+│  ├─ Methods/                       # 方法页
+│  ├─ Datasets/                      # 数据集页
+│  ├─ Comparisons/                   # 跨论文比较页
+│  ├─ Topics/                        # 主题页
+│  └─ Syntheses/                     # 高层综合页
 ├─ Management/
-│  ├─ AGENTS.md              # Agent 说明 / schema
-│  ├─ CurrentQuestions.md    # 当前重点问题
-│  ├─ index.md               # 全局索引
-│  ├─ log.md                 # 追加式日志
-│  ├─ PaperRegistry.md       # 论文映射登记表
-│  ├─ WeeklyReports/         # 周报
-│  ├─ ReviewNotes/           # 论文复盘记录
-│  └─ LintReports/           # 知识库整理报告
-└─ Attachments/              # 可选的本地附件目录
+│  ├─ AGENTS.md                      # Agent 说明 / schema
+│  ├─ CurrentQuestions.md            # 当前重点问题
+│  ├─ index.md                       # 全局索引
+│  ├─ log.md                         # 追加式日志
+│  ├─ PaperRegistry.md               # 论文映射登记表
+│  ├─ SessionIndex.md                # Session 索引
+│  ├─ ProjectIndex.md                # 项目索引
+│  ├─ ProjectTree.md                 # 项目树
+│  ├─ ProjectAssignmentQueue.md      # 项目归属待确认队列
+│  ├─ WeeklyReports/                 # 周报
+│  ├─ ReviewNotes/                   # 复盘记录
+│  ├─ LintReports/                   # 整理报告
+│  ├─ SessionNotes/                  # 论文级 session
+│  ├─ ProjectSessionNotes/           # 项目级 / hybrid session
+│  ├─ Templates/                     # 模板集合
+│  └─ Skills/                        # Skills 规范
+├─ projects/                         # 层级项目层
+└─ Attachments/                      # 可选的本地附件目录
 ```
 
 ---
 
-### 这套 Skills 主要解决什么问题
+## Skills 总览（v0.2.0）
 
-本 Skills 体系旨在覆盖论文阅读与知识管理的完整过程，包括：
-
-- 将 Zotero 中的原始阅读批注整理成结构化 wiki
-- 持续维护本地论文知识库
-- 整理跨论文的概念、方法、数据集和比较关系
-- 根据本地知识库生成周报
-- 支持对单篇论文进行快速复盘
-- 当你提问某个方法或主题时，优先从本地知识库中检索答案
-- 明确告诉你**应该重看哪篇论文、哪份笔记、哪一部分内容**
-
-它的长期目标，是帮助研究者把零散的阅读痕迹，逐步转化为一个可维护、可复盘、可检索、可持续积累的本地研究记忆系统。
+| Skill | 名称              | 它做什么                                            | 0.2.0 中的关键升级                                           |
+| ----- | ----------------- | --------------------------------------------------- | ------------------------------------------------------------ |
+| `S0`  | 规范检查 / 初始化 | 检查全局库、项目树和会话层是否齐全且一致            | 现在会检查 `projects/`、树关系成环、manifest 合法性、project-session 就绪情况 |
+| `S1`  | 单篇论文整理      | 把一篇论文编译进全局 wiki，并生成项目归属建议       | 现在有强制三阶段流程，并写入 `ProjectAssignmentQueue.md`     |
+| `S2`  | 全库整理          | 维护 `Notes/` 和 `projects/` 的结构健康             | 现在检查父子项目一致性、兄弟项目重叠以及地图/大纲漂移        |
+| `S3`  | 周报生成          | 生成覆盖论文与项目的周报                            | 现在同时总结父项目与子项目推进                               |
+| `S4`  | 复盘              | 帮你复盘单篇论文、子项目或父项目                    | 现在支持项目复盘与快速熟悉路径                               |
+| `S5`  | 本地检索 / 导航   | 基于本地证据回答问题并给出重读路径                  | 现在支持项目树列出、项目结构说明和兄弟项目比较               |
+| `S6`  | 会话沉淀 / 匹配   | 把高价值讨论沉淀为 paper / project / hybrid session | 现在支持项目感知与 hybrid session                            |
 
 ---
 
-### Skills 详细说明
+## 推荐使用方式（v0.2.0）
 
-#### Skill 0 —— 结构检查与初始化
-
-该 Skill 用于检查本地知识库目录是否完整、命名是否规范、关键索引文件是否存在，并在必要时自动补齐缺失的基础管理文件。它会校验 `LiteratureNotes`、`Notes`、`Management` 等核心目录，检查 `citekey` 等论文标识是否可用于后续映射，并保证整个仓库在规模增长后仍然具备清晰、稳定、可维护的结构。它是所有其他 Skills 正常工作的前提。
-
-#### Skill 1 —— 单篇论文笔记整理
-
-该 Skill 面向单篇论文的知识摄取过程。它会读取通过 ZotLit 导入的原始文献笔记，并在必要时结合 PDF 与相关本地文件，将该论文整理为结构化的本地 wiki 页面。整理内容包括论文问题定义、核心方法、关键实验、用户关注点、局限性以及与现有知识库内容的关联。同时，它还可以联动更新相关概念页、方法页、比较页和论文登记表。它的目标不是生成一个浅层摘要，而是把一篇论文真正纳入本地知识网络中。
-
-#### Skill 2 —— 全库 Wikis 整理
-
-该 Skill 负责对整个 `Notes` 知识库进行巡检与结构维护。它会识别重复页面、命名不统一、孤儿页面、缺失链接、陈旧结论以及尚未建立的跨论文关系，并以整理报告或安全更新的方式帮助用户优化知识库结构。它的目的，是避免知识库随着阅读量增加而重新变成另一堆分散笔记，而是始终保持可导航、可扩展和便于长期维护的形态。
-
-#### Skill 3 —— 周报生成
-
-该 Skill 会基于本地知识库的更新记录生成结构化的 Markdown 周报，总结本周阅读了哪些论文、更新了哪些判断、发现了哪些新概念、还有哪些未解决的问题，以及下一周值得优先推进的方向。生成结果可直接在 Obsidian 中查看。它并不是简单的“阅读流水账”，而是对研究认知推进过程的一次阶段性梳理。
-
-#### Skill 4 —— 论文复盘
-
-该 Skill 用于帮助用户快速回想和重建自己对某篇论文的理解。它会综合原始 ZotLit 笔记、结构化论文 wiki 页面以及相关概念页和比较页，生成面向记忆恢复和理解加深的复盘材料。它既可以用于快速回忆，也可以用于准备组会、答辩、自测或重新进入某一研究方向。它的重点不在于重新复述论文摘要，而在于恢复用户当时的阅读脉络，并指出哪些部分值得重新细看。
-
-#### Skill 5 —— 本地知识库检索与重读导航
-
-该 Skill 在你询问某个方法、概念、任务设定或研究问题时，优先检索本地知识库，而不是直接给出泛化性的模型回答。它不仅会告诉你有哪些相关论文，还会指出哪些页面、哪条笔记、哪一部分内容最值得优先回看，以及可能存在的冲突和不同视角。它的目标，是让本地知识库真正成为一个研究导航系统，而不只是一个静态的笔记存放区。
-
----
-
-### 为什么这套工作流值得使用
-
-大多数基于 LLM 的论文阅读流程，本质上仍然是“每次重新读文档、重新回答问题”的临时检索模式，知识不会真正沉淀。  
-而这套系统的目标，是让 Agent 持续维护一个本地、持久、可演化的论文 wiki。
-
-随着阅读的增加，这个知识库会变得：
-
-- 更有结构
-- 更有连接
-- 更容易检索
-- 更容易复盘
-- 更容易服务于后续研究
-
-换句话说，它帮助用户从“重复从原始文档开始”转向“在持续积累的研究理解上继续推进”。
-
----
-
-### 推荐使用方式
-
-一个比较自然的日常工作流如下：
+### 日常读论文
 
 1. 在 Zotero 中阅读并批注文献。
 2. 通过 ZotLit 将文献笔记导入 Obsidian。
-3. 运行 **单篇论文笔记整理** Skill，将论文编译进本地 wiki。
-4. 定期运行 **全库 Wikis 整理** Skill，保持知识库结构健康。
-5. 每周使用 **周报生成** Skill 形成阶段性总结。
-6. 在复习、组会和研究规划时使用 **论文复盘** 与 **本地知识库检索** Skills。
+3. 如果讨论中出现值得保留的内容，先运行 **S6**。
+4. 运行 **S1**，把论文编译进全局 wiki。
+5. 查看 `Management/ProjectAssignmentQueue.md` 中的项目建议。
+6. 确认后，再把最终项目归属写入 `project.yml`。
+7. 需要快速回顾时用 **S4**。
+8. 需要“答案 + 路径 + 重读顺序”时用 **S5**。
+
+### 每周维护
+
+1. 运行 **S2** 进行全库整理。
+2. 查看 lint 报告。
+3. 运行 **S3** 生成周报。
+
+### 项目推进
+
+1. 让论文知识保持唯一地写在 `Notes/` 中。
+2. 让项目归类和层级关系保持在 `projects/` 中。
+3. 始终把 `project.yml` 当作唯一项目归属接口。
+4. 需要快速熟悉项目时，优先使用 **S4** 与 **S5**。
 
 ---
 
-### 适用场景
+## 适用场景
 
 本项目适用于：
 
@@ -371,6 +693,7 @@ OMyPaper/
 - 研究笔记整理
 - 本地个人知识库建设
 - 跨论文概念与方法比较
+- 以项目为导向的研究组织
 - 长期研究记忆支持
 
 尤其适合偏好以下工作流的用户：
@@ -383,11 +706,10 @@ OMyPaper/
 
 ---
 
-### 说明
+## 说明
 
-- 本仓库是 **Agent 无关（Agent-agnostic）** 的：任意 Agent 工具都可以使用这套 Skills。
+- 本仓库是 **Agent 无关（Agent-agnostic）** 的。
 - 本系统默认采用 **本地文件工作流**。
 - `LiteratureNotes/` 中的内容应尽量作为原始来源层保留。
-- Agent 维护的整理性内容应主要写入 `Notes/` 与 `Management/`。
+- Agent 维护的整理性内容应主要写入 `Notes/`、`projects/` 与 `Management/`。
 - 如果你自行修改目录结构，请同步修改对应的 Skill 提示词与 Agent 说明文件。
-

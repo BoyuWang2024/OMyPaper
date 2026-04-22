@@ -1,0 +1,16 @@
+project_id: project_id_here
+title: Project Title Here
+project_type: standalone
+parent_project:
+scope: >
+  Describe the scope boundary of this project in one short paragraph.
+objective: >
+  Describe the concrete research or synthesis objective.
+keywords: []
+status: active
+papers:
+  core_refs: []
+  supporting_refs: []
+notes:
+  sibling_boundaries: []
+  exclusions: []
